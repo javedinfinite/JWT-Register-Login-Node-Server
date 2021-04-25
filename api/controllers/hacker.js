@@ -27,9 +27,9 @@ exports.get_hacker_details = (req, res, next) => {
   
   };
 
-  exports.get_top_n_details = (req, res, next) => {
+  exports.get_top_n_hackers = (req, res, next) => {
  
-      hackerModel.get_top_n_details(req.params.number).then((data) => {
+      hackerModel.get_top_n_hackers(req.params.number).then((data) => {
         
         const response = {
           message : "Handling get requests to /topHackers. Top hacker details is provided to you as following",
