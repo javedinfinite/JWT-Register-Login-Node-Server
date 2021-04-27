@@ -13,6 +13,8 @@ router.get("/hackers", authenticate, HackerController.get_all_hackers);
 router.get("/hackerDetails/:id", authenticate, HackerController.get_hacker_details);
 router.get("/topHackers/:number", authenticate, HackerController.get_top_n_hackers);
 router.post("/register", AuthController.registerUser);
+router.post("/login", AuthController.loginUser);
+// router.post("/rtoken", AuthController.getRefreshToken);
 
 
 module.exports = router;
