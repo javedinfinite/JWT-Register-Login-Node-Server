@@ -2,11 +2,14 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+var cookieParser = require('cookie-parser');
 
 const hackerRoutes = require("./api/routes/hacker");
  
 app.use(morgan("dev"));
- 
+
+app.use(cookieParser());
+
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {

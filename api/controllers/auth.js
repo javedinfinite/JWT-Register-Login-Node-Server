@@ -6,7 +6,12 @@ require("dotenv").config();
 function generateAccessToken(username) {
     return jwt.sign(username, process.env.TOKEN_SECRET, { expiresIn: 60 });
   }
-
+  
+function generateRefreshToke(username){
+    const refresh_token =  jwt.sign(username, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1h' });
+    //Update User table with this refresh token
+    return refresh_token
+}
 
 
 exports.loginUser = (req, res, next) => {
@@ -24,16 +29,23 @@ exports.loginUser = (req, res, next) => {
         if(response_modal==false){
 
             response.data =  {user_exists: response_modal, reason:"Invalid User"} 
-            res.status(200).json(response);
+            res.status(401).json(response);
 
         }
         else{
             const token = generateAccessToken({ username: req.body.user_name });
+            const refresh_token = generateRefreshToke({ username: req.body.user_name })
+            //Here I may need to set expiry of the cookie to 1 year brcause anyway the cookie stores refresh token which can expire
+            res.cookie('refresh-token', refresh_token, { secure: true, maxAge: 3600000, httpOnly: true });//for 1 hour = 3600000 ms//
             response.data =  {user_exists: response_modal, token:token}
+            //The access token will be saved in memory on client side, but closing or switching the tab will lost it, so use refresh token to get new access token
+            //this will help us if user closed the tab and comes back again, so we don't ske to login but use refresh token to set new access token
+            //And we are good to go.
             res.status(200).json(response);
         }
     }).catch(e => console.log(e));
 }
+
 exports.registerUser = (req, res, next) => {
 
       data = {
@@ -60,4 +72,19 @@ exports.registerUser = (req, res, next) => {
             res.status(200).json(response);
         }
     }).catch(e => console.log(e));
+}
+
+
+exports.get_refresh_token = (req, res, next) =>{
+
+    //check if refresh tocken is sent by browser in cookies, if not the cookie may have expired, so throw 401 and client should logout.
+
+    refresh_token_from_client = req.cookies['refresh-token']
+    refresh_token_from_DB = "get refresh token for the user from DB"
+    //if the tokens are matched
+    //then verify the refresh token
+    //if refresh token has expired then return 401
+    //if refresh token is active then generate a new jwt access token which will be sent to cliesnt as payload, 
+    //generate new refresh token save it to DB and set cookies of client with this new refresh token.
+
 }
