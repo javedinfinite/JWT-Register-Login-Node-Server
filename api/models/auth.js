@@ -10,9 +10,9 @@ validate_user = async(user_name, password) => {
             values: [user_name],
           }
         const res = await client.query(query);
+        client.release()
         if(res.rowCount==1){
             const user = res.rows[0]
-            client.release()
             const match = await bcrypt.compare(password, user.password);
             if(match)
                 return true
@@ -51,8 +51,8 @@ register_hacker = async(data) => {
             return false
         }
         const query = {
-            text: 'Insert into hackers(name, user_name, password, user_type) VALUES($1, $2, $3, $4)',
-            values: [data.name, data.user_name, data.password, data.user_type],
+            text: 'Insert into hackers(name, user_name, password, user_type, avatar) VALUES($1, $2, $3, $4, $5)',
+            values: [data.name, data.user_name, data.password, data.user_type, 'violet'],
           }
         const res = await client.query(query);
         
