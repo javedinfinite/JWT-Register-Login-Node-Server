@@ -1,7 +1,7 @@
 {
-  "name": "codemobilebackend",
+  "name": "styldodbackend",
   "version": "1.0.0",
-  "description": "code mobile api",
+  "description": "styldod api",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

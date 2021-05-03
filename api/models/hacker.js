@@ -42,6 +42,8 @@ get_hackers_by_page_num = async(pageNumber) => {
         }
 }
 
+
+
 get_hacker_details = async(id) => {
     try{
         const client = await DbConnection.get_db_connection()

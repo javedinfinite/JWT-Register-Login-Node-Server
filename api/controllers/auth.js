@@ -3,8 +3,8 @@ var bcrypt = require('bcryptjs');
 const authModel = require('../models/auth')
 require("dotenv").config();
 
-function generateAccessToken(username) {
-    return jwt.sign(username, process.env.TOKEN_SECRET, { expiresIn: '1h' });//60 //'1h'
+function generateAccessToken(user_details) {
+    return jwt.sign(user_details, process.env.TOKEN_SECRET, { expiresIn: '1h' });//60 //'1h'
   }
   
 function generateRefreshToke(username){
@@ -33,15 +33,20 @@ exports.loginUser = (req, res, next) => {
 
         }
         else{
-            const token = generateAccessToken({ username: req.body.user_name });
-            const refresh_token = generateRefreshToke({ username: req.body.user_name })
-            //Here I may need to set expiry of the cookie to 1 year brcause anyway the cookie stores refresh token which can expire
-            res.cookie('refresh-token', refresh_token, { secure: true, maxAge: 3600000, httpOnly: true });//for 1 hour = 3600000 ms//
-            response.data =  {user_exists: response_modal, token:token}
-            //The access token will be saved in memory on client side, but closing or switching the tab will lost it, so use refresh token to get new access token
-            //this will help us if user closed the tab and comes back again, so we don't ske to login but use refresh token to set new access token
-            //And we are good to go.
-            res.status(200).json(response);
+                authModel.get_one_hacker(req.body.user_name).then((user_details)=>{
+
+                    const token = generateAccessToken(user_details);
+                    const refresh_token = generateRefreshToke({ username: req.body.user_name })
+                    //Here I may need to set expiry of the cookie to 1 year brcause anyway the cookie stores refresh token which can expire
+                    res.cookie('refresh-token', refresh_token, { secure: true, maxAge: 3600000, httpOnly: true });//for 1 hour = 3600000 ms//
+                    response.data =  {user_exists: response_modal, token:token}
+                    //The access token will be saved in memory on client side, but closing or switching the tab will lost it, so use refresh token to get new access token
+                    //this will help us if user closed the tab and comes back again, so we don't ske to login but use refresh token to set new access token
+                    //And we are good to go.
+                    res.status(200).json(response);
+
+                })
+
         }
     }).catch(e => console.log(e));
 }
