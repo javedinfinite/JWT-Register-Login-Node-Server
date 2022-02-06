@@ -73,7 +73,7 @@ get_top_n_hackers = async(id) => {
                     top_id_list.push(item.id);
                 }
             }
-            const sql_text2 = 'SELECT id,name,user_name,user_type,avatar FROM  public.hackers where id in ('+top_id_list+')';   
+            const sql_text2 = 'SELECT A.id,A.name,A.user_name,A.user_type,A.avatar, B.overall_rank FROM  public.hackers as A join public.hacker_details as B on A.id=B.id where A.id in ('+top_id_list+') order by B.overall_rank desc';   
             const res2 = await client.query(sql_text2 );
             client.release()
             return res2.rows                 

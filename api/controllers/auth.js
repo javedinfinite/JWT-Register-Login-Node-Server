@@ -4,10 +4,11 @@ const authModel = require('../models/auth')
 require("dotenv").config();
 
 function generateAccessToken(user_details) {
-    return jwt.sign(user_details, process.env.TOKEN_SECRET, { expiresIn: '1h' });//60 //'1h'
+    return jwt.sign(user_details, process.env.TOKEN_SECRET, { expiresIn: '1h' });//60 //'1h' // '1s', '1m'
+    // return jwt.sign(user_details, process.env.TOKEN_SECRET, { expiresIn: '1m' });//60 //'1h' // '1s', '1m'
   }
   
-function generateRefreshToke(username){
+function generateRefreshToken(username){
     const refresh_token =  jwt.sign(username, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1h' });
     //Update User table with this refresh token
     return refresh_token
@@ -36,9 +37,9 @@ exports.loginUser = (req, res, next) => {
                 authModel.get_one_hacker(req.body.user_name).then((user_details)=>{
 
                     const token = generateAccessToken(user_details);
-                    const refresh_token = generateRefreshToke({ username: req.body.user_name })
+                    const refresh_token = generateRefreshToken({ username: req.body.user_name })
                     //Here I may need to set expiry of the cookie to 1 year brcause anyway the cookie stores refresh token which can expire
-                    res.cookie('refresh-token', refresh_token, { secure: true, maxAge: 3600000, httpOnly: true });//for 1 hour = 3600000 ms//
+                    res.cookie('refresh-token', refresh_token, { secure: true, maxAge: 3600000, httpOnly: false });//for 1 hour = 3600000 ms//
                     response.data =  {user_exists: response_modal, token:token}
                     //The access token will be saved in memory on client side, but closing or switching the tab will lost it, so use refresh token to get new access token
                     //this will help us if user closed the tab and comes back again, so we don't ske to login but use refresh token to set new access token

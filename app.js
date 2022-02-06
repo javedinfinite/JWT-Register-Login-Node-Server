@@ -25,14 +25,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/styldod", hackerRoutes);
+app.use("/hackers", hackerRoutes);
 
 app.use("/",(req, res, next) => {
   res.status(200).json({"message":"this route is not available"});
-  // res.send('Hello World');
 });
-
-
 
 
 app.use((error, req, res, next) => {

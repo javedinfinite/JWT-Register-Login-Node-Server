@@ -6,18 +6,19 @@ const AuthController = require('../controllers/auth');
 
 
 router.get("/",(req, res, next) => {
-    res.status(200).json({"message":" hackers root route is not available"});
+  res.status(200).json({"message":" yup! u got it right..., try /all, /count, /:pageNum with autorization header = bearer token"});
   });
 
-router.get("/hackers", authenticate, HackerController.get_all_hackers);
 
-router.get("/hackers/pagecount",authenticate, HackerController.get_hackers_count);
+router.get("/all", authenticate, HackerController.get_all_hackers);
 
-router.get("/hackers/:pageNum",authenticate, HackerController.get_hackers_by_page_num);
+router.get("/count",authenticate, HackerController.get_hackers_count);
 
-router.get("/hackerDetails/:id", authenticate, HackerController.get_hacker_details);
+router.get("/:pageNum",authenticate, HackerController.get_hackers_by_page_num);
 
-router.get("/topHackers/:number", authenticate, HackerController.get_top_n_hackers);
+router.get("/details/:id", authenticate, HackerController.get_hacker_details);
+
+router.get("/top/:number", authenticate, HackerController.get_top_n_hackers);
 
 router.post("/register", AuthController.registerUser);
 
