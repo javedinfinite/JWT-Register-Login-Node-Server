@@ -2,6 +2,7 @@ const DbConnection = require("./dbConnection")
 var bcrypt = require('bcryptjs');
 
 validate_user = async(user_name, password) => {
+    console.log('user_name, password', user_name, password)
 
     try{
         const client = await DbConnection.get_db_connection()
@@ -13,6 +14,7 @@ validate_user = async(user_name, password) => {
         client.release()
         if(res.rowCount==1){
             const user = res.rows[0]
+            console.log('user', user);
             const match = await bcrypt.compare(password, user.password);
             if(match)
                 return true
