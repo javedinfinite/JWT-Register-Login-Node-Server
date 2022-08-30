@@ -50,6 +50,7 @@ register_hacker = async(data) => {
     try{
         const client = await DbConnection.get_db_connection()
         if(await is_username_exist(data.user_name, client)){
+            client.release()
             return false
         }
         const query = {

@@ -29,7 +29,7 @@ exports.loginUser = (req, res, next) => {
         data: "",
       };
       if (response_modal == false) {
-        response.data = { user_exists: response_modal, reason: "Invalid User" };
+        response.data = { user_exists: response_modal, desc: "Invalid user, Please try with correct login details" };
         res.status(401).json(response);
       } else {
         authModel.get_one_hacker(req.body.user_name).then((user_details) => {
@@ -68,8 +68,7 @@ exports.registerUser = (req, res, next) => {
   };
   if (isDataContainsEmpty(data)) {
     response.data = { desc: "Empty or null values are not allowed" };
-    // res.status(409).json(response);
-    throw {status: 409, message: response};
+    res.status(409).json(response);
   } else {
     console.log("resgistering user...........");
 
@@ -90,7 +89,9 @@ exports.registerUser = (req, res, next) => {
           res.status(200).json(response);
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log(e)
+    });
   }
 };
 
