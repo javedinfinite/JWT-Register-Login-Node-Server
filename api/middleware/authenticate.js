@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
     try {
-        console.log('req.header', req.headers)
         const authHeader = req.headers['authorization']
         const token = authHeader && authHeader.split(' ')[1]
       
@@ -17,9 +16,17 @@ module.exports = (req, res, next) => {
           next();
         })
     } catch (error) {
-        return res.status(401).json({
-            message: 'Auth failed, Invalid user..',
-            error: error
-        });
+
+        const response = {
+            message: "Auth failed, Invalid user..",
+            error: error,
+            failureCode: "",
+          };
+        if(error.name==='TokenExpiredError' || error.name==='JsonWebTokenError'){
+            response.message = error.message
+            response.failureCode = error.name
+        }
+            
+        return res.status(401).json(response);
     }
 };
