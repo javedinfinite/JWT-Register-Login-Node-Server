@@ -5,7 +5,7 @@ require("dotenv").config();
 const isDataContainsEmpty = require("../utility");
 
 function generateAccessToken(user_details) {
-  return jwt.sign(user_details, process.env.TOKEN_SECRET, { expiresIn: "1m" }); //60 //'1h' // '1s', '1m'
+  return jwt.sign(user_details, process.env.TOKEN_SECRET, { expiresIn: "1h" }); //60 //'1h' // '1s', '1m'
   // return jwt.sign(user_details, process.env.TOKEN_SECRET, { expiresIn: '1m' });//60 //'1h' // '1s', '1m'
 }
 

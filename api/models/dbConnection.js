@@ -24,7 +24,7 @@ get_db_connection = async () => {
         return client
 
     } catch (err){
-        console.log(err)
+        console.log('err from db connection.........',err)
     }
 };
 
