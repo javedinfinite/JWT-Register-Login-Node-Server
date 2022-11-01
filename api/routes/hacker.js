@@ -9,7 +9,7 @@ router.get("/",(req, res, next) => {
   res.status(200).json({"message":" yup! u got it right..., try /all, /count, /:pageNum with autorization header = bearer token"});
   });
 
-router.get("/rtoken", AuthController.get_refresh_token);
+router.get("/rtoken", AuthController.get_fresh_access_token);
 
 router.get("/all", authenticate, HackerController.get_all_hackers);
 
