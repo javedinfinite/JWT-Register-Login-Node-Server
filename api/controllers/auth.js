@@ -5,15 +5,13 @@ require("dotenv").config();
 const isDataContainsEmpty = require("../utility");
 
 function generateAccessToken(user_details) {
-  return jwt.sign(user_details, process.env.TOKEN_SECRET, { expiresIn: "1m" }); //60 //'1h' // '1s', '1m'
-  // return jwt.sign(user_details, process.env.TOKEN_SECRET, { expiresIn: '1m' });//60 //'1h' // '1s', '1m'
+  return jwt.sign(user_details, process.env.TOKEN_SECRET, { expiresIn: "10m" }); //60 //'1h' // '1s', '1m'
 }
 
 function generateRefreshToken(username) {
   const refresh_token = jwt.sign(username, process.env.REFRESH_TOKEN_SECRET, {
-    expiresIn: "5m",
+    expiresIn: "15m",
   });
-  //Update User table with this refresh token
   return refresh_token;
 }
 
@@ -25,7 +23,7 @@ exports.loginUser = (req, res, next) => {
     .validate_user(user_name, password)
     .then((response_modal) => {
       let response = {
-        message: "Handling get requests to /login",
+        message: "Handling post requests to /login",
         data: "",
       };
       if (response_modal == false) {
@@ -53,9 +51,6 @@ exports.loginUser = (req, res, next) => {
             token: token,
             desc: "user is successfully loggedin",
           };
-          //The access token will be saved in memory on client side, but closing or switching the tab will lost it, so use refresh token to get new access token
-          //this will help us if user closed the tab and comes back again, so we don't ske to login but use refresh token to set new access token
-          //And we are good to go.
           res.status(200).json(response);
         });
       }
@@ -65,7 +60,7 @@ exports.loginUser = (req, res, next) => {
 
 exports.registerUser = (req, res, next) => {
   let response = {
-    message: "Handling get requests to /resgister",
+    message: "Handling post requests to /resgister",
     data: "",
   };
 
@@ -79,7 +74,7 @@ exports.registerUser = (req, res, next) => {
     response.data = { desc: "Empty or null values are not allowed" };
     res.status(409).json(response);
   } else {
-    console.log("resgistering user...........");
+    console.log("registering user...........");
 
     authModel
       .register_hacker(data)
@@ -109,12 +104,10 @@ exports.get_fresh_access_token = async (req, res, next) => {
     message: "Handling get requests to /rtoken",
     data: "",
   };
-  console.log("req.cookies......", req.cookies);
   //check if refresh tocken is sent by browser in cookies, if not the cookie may have expired, so throw 401 and client should logout.
   // to check cookies getting received, use curl: curl http://127.0.0.1:4000/hackers/rtoken --cookie "refresh-token=test"
 
   refresh_token_from_client = req.cookies["refresh_token"];
-  console.log("refresh_token_from_client.....", refresh_token_from_client);
 
   try {
     if (refresh_token_from_client == null) throw "token not found";
@@ -125,7 +118,6 @@ exports.get_fresh_access_token = async (req, res, next) => {
       (err, token_decoded) => {
         if (err) throw err;
 
-        console.log("refresh_token_decoded....", token_decoded);
         authModel
           .get_one_hacker(token_decoded.username)
           .then((user_details) => {
@@ -149,15 +141,4 @@ exports.get_fresh_access_token = async (req, res, next) => {
 
     return res.status(401).json(response);
   }
-
-  // res.status(200).json({test:"testing data", refresh_token: refresh_token_from_client});
-
-  //console.log('req.signedCookies', req.signedCookies);
-  //An ideal process:
-  //refresh_token_from_DB = "get refresh token for the user from DB";
-  //compare refresh_token_from_client and refresh_token_from_DB, if the tokens are matched
-  //then verify the refresh token
-  //if refresh token has expired then return 401
-  //if refresh token is active then generate a new jwt access token which will be sent to cliesnt as payload,
-  //generate new refresh token save it to DB and set cookies of client with this new refresh token.
 };
