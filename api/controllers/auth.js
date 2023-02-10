@@ -10,7 +10,7 @@ function generateAccessToken(user_details) {
 
 function generateRefreshToken(username) {
   const refresh_token = jwt.sign(username, process.env.REFRESH_TOKEN_SECRET, {
-    expiresIn: "15m",
+    expiresIn: "20m",
   });
   return refresh_token;
 }

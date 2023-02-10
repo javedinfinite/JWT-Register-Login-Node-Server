@@ -1,0 +1,36 @@
+Copy below two table creation command and run elephant sql under browser section
+
+CREATE TABLE IF NOT EXISTS public.hackers
+(
+    id SERIAL,
+    name character varying(255) COLLATE pg_catalog."default" DEFAULT 'NULL::character varying',
+    user_name character varying(36) COLLATE pg_catalog."default" NOT NULL,
+    password character varying(255) COLLATE pg_catalog."default",
+    user_type character varying(255) COLLATE pg_catalog."default" DEFAULT 'NULL::character varying',
+    avatar character varying(255) COLLATE pg_catalog."default",
+    CONSTRAINT hackers_pkey PRIMARY KEY (id),
+    CONSTRAINT unique_constraint UNIQUE (user_name)
+        INCLUDE(user_name)
+)
+
+ CREATE TABLE IF NOT EXISTS public.hacker_details
+(
+    id SERIAL,
+    profile_link text COLLATE pg_catalog."default",
+    location character varying(255) COLLATE pg_catalog."default",
+    education text COLLATE pg_catalog."default",
+    challenges_solved integer,
+    solutions_submitted integer,
+    solutions_accepted integer,
+    overall_rank integer,
+    followers integer,
+    following integer,
+    CONSTRAINT hacker_details_pkey PRIMARY KEY (id)
+)
+
+
+
+
+## the select commands
+SELECT * FROM "public"."hackers" LIMIT 100
+SELECT * FROM "public"."hacker_details" LIMIT 100
