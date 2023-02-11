@@ -1,14 +1,14 @@
 # How to run this JWT-Node Server in local
 
 1. Make sure you have git and node(>14) installed in you system
-2. Clone this repo [JWT-Register-Login-Node-Server](https://github.com/javedinfinite/JWT-Register-Login-Node-Server.git).
+2. Clone this repo [JWT-Register-Login-Node-Server](https://github.com/javedinfinite/JWT-Register-Login-Node-Server).
 
 3. Run this command using terminal in the root directory of this project.
  < `npm i` > . This will install all node modules required to run the project.
 
 4. ***Create DB in postgres***
-* The free postgres sql server you can create from [https://api.elephantsql.com](https://api.elephantsql.com)
- * Register and login to https://api.elephantsql.com and create a new instance.
+* The free postgres sql server you can create from [https://www.elephantsql.com/](https://www.elephantsql.com/)
+ * Register and login to https://www.elephantsql.com/ and create a new instance.
  * CLick on newly created instance and you see db info under details section.
  * From this details section Keep a note of the db details like host password etc
  * Create two tables by using the create commands given in the sql.txt file
